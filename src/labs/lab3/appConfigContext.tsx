@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import React, { createContext, useMemo, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 
 export type AppConfig = {
   tenantId: string;

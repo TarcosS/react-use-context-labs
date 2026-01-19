@@ -20,8 +20,6 @@ export function TimelinePanel() {
     return events.filter((e) => e.type === filter);
   }, [events, filter]);
 
-  const startTs = filtered.length > 0 ? filtered[filtered.length - 1].ts : 0;
-
   const withDeltas = useMemo(() => {
     if (filtered.length === 0) return [];
 

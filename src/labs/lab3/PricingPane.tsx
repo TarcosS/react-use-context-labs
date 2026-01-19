@@ -7,14 +7,18 @@ import { timeline } from "../../observability/timeline";
 
 export function PricingPane() {
   const ctx = useContext(AppConfigContext);
-  if (!ctx) return <div style={{ opacity: 0.75 }}>Missing AppConfigProvider</div>;
 
-  const { config } = ctx;
+  const config = ctx?.config;
 
   const resource = useMemo(() => {
+    if (!config) return null;
     // resource creation is deterministic & cached by key inside getPricingResource
     return getPricingResource(config);
-  }, [config.tenantId, config.locale, config.pricingTier]);
+  }, [config]);
+
+  if (!config) {
+    return <div style={{ opacity: 0.75 }}>Missing AppConfigProvider</div>;
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -23,7 +27,7 @@ export function PricingPane() {
       </div>
 
       <Suspense fallback={<SuspendFallback label="Lab3: pricing resource" />}>
-        <Inner promise={resource} />
+        <Inner promise={resource!} />
       </Suspense>
 
       <div style={{ fontSize: 12, opacity: 0.75 }}>

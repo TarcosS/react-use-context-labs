@@ -10,30 +10,38 @@ export function LegacyEffectPane({
   requestId: number;
   shouldFail: boolean;
 }) {
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [data, setData] = useState<UserDTO | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<{
+    requestId: number;
+    shouldFail: boolean;
+    data: UserDTO | null;
+    error: string | null;
+  } | null>(null);
+
+  // Derive loading state from comparing props with completed request
+  const isLoading =
+    result === null ||
+    result.requestId !== requestId ||
+    result.shouldFail !== shouldFail;
 
   useEffect(() => {
     let active = true;
-
-    setStatus("loading");
-    setData(null);
-    setError(null);
 
     timeline.push("transition", "Lab2 (legacy): start request", { requestId, shouldFail });
 
     fetchUser({ requestId, shouldFail })
       .then((res) => {
         if (!active) return;
-        setData(res);
-        setStatus("success");
+        setResult({ requestId, shouldFail, data: res, error: null });
         timeline.push("resolve", "Lab2 (legacy): request resolved", { requestId });
       })
       .catch((err: unknown) => {
         if (!active) return;
-        setStatus("error");
-        setError(err instanceof Error ? err.message : String(err));
+        setResult({
+          requestId,
+          shouldFail,
+          data: null,
+          error: err instanceof Error ? err.message : String(err),
+        });
         timeline.push("reject", "Lab2 (legacy): request rejected", { requestId });
       });
 
@@ -43,15 +51,17 @@ export function LegacyEffectPane({
     };
   }, [requestId, shouldFail]);
 
+  const data = !isLoading ? result?.data : null;
+  const error = !isLoading ? result?.error : null;
+
   return (
     <PaneShell
       title="Legacy: useEffect + local loading/error state"
       subtitle="Explicit orchestration (loading flags, cleanup, state transitions)"
     >
-      {status === "loading" ? <LoadingBlock label="Loading (legacy)..." /> : null}
-      {status === "error" ? <ErrorBlock msg={error ?? "Unknown error"} /> : null}
-      {status === "success" && data ? <UserBlock data={data} /> : null}
-      {status === "idle" ? <div style={{ opacity: 0.75 }}>Idle</div> : null}
+      {isLoading ? <LoadingBlock label="Loading (legacy)..." /> : null}
+      {error ? <ErrorBlock msg={error} /> : null}
+      {data ? <UserBlock data={data} /> : null}
     </PaneShell>
   );
 }
