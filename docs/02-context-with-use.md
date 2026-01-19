@@ -1,4 +1,10 @@
-# Context + `use`
+# Context + `use` — Consumption Patterns
+
+> **What you'll learn**
+> - The difference between `useContext()` and `use()` for reading Context
+> - When (and when not) to prefer `use(Context)` over `useContext()`
+
+---
 
 ## Two ways to read Context
 - `useContext(MyContext)` (classic)

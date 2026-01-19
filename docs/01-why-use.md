@@ -1,4 +1,10 @@
-# Why `use`?
+# Why `use`? — Mental Model
+
+> **What you'll learn**
+> - The core mental model: `use(resource)` reads a resource at render time
+> - How Suspense and ErrorBoundary become UI contracts (not component state)
+
+---
 
 This repo is intentionally narrow: it focuses on the React `use` API as a **render-time resource reader**.
 

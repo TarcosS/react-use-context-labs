@@ -1,4 +1,10 @@
-# Performance notes (what to measure)
+# Performance Notes — What to Measure
+
+> **What you'll learn**
+> - What the timeline panel measures (and what it doesn't)
+> - Why complexity cost matters more than micro-optimizing milliseconds
+
+---
 
 This repo does not claim “use() is always faster”.
 The goal is to make **responsibility boundaries** measurable.

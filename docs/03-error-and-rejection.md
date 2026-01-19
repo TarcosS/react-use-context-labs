@@ -1,4 +1,10 @@
-# Rejections, ErrorBoundary, and UI contracts
+# Rejections + ErrorBoundary — Failure as a Contract
+
+> **What you'll learn**
+> - How rejected promises surface as thrown errors during render
+> - How to use ErrorBoundary to own failure UI (instead of component-level error state)
+
+---
 
 ## Core idea
 With `use(promise)`, a rejected promise is surfaced by throwing during render.
