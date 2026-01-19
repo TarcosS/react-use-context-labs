@@ -20,6 +20,28 @@ export function TimelinePanel() {
     return events.filter((e) => e.type === filter);
   }, [events, filter]);
 
+  const startTs = filtered.length > 0 ? filtered[filtered.length - 1].ts : 0;
+
+  const withDeltas = useMemo(() => {
+    if (filtered.length === 0) return [];
+
+    // oldest -> newest
+    const chronological = [...filtered].reverse();
+    const base = chronological[0].ts;
+
+    let prev = base;
+
+    const enriched = chronological.map((e, idx) => {
+      const deltaPrev = idx === 0 ? 0 : e.ts - prev;
+      const deltaStart = e.ts - base;
+      prev = e.ts;
+      return { ...e, deltaPrev, deltaStart };
+    });
+
+    // back to newest -> oldest (UI order)
+    return enriched.reverse();
+  }, [filtered]);
+
   return (
     <section
       style={{
@@ -70,10 +92,10 @@ export function TimelinePanel() {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 280, overflow: "auto" }}>
-        {filtered.length === 0 ? (
+        {withDeltas.length === 0 ? (
           <div style={{ fontSize: 12, opacity: 0.7 }}>No events yet.</div>
         ) : (
-          filtered.map((e) => (
+          withDeltas.map((e) => (
             <div
               key={e.id}
               style={{
@@ -89,7 +111,12 @@ export function TimelinePanel() {
                 <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
                   {typeLabels[e.type]}
                 </span>
-                <span style={{ opacity: 0.7 }}>{Math.round(e.ts)}ms</span>
+
+                <span style={{ display: "flex", gap: 10, opacity: 0.75, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}>
+                  <span>+{e.deltaPrev.toFixed(1)}ms</span>
+                  <span>({e.deltaStart.toFixed(1)}ms)</span>
+                  <span>{Math.round(e.ts)}ms</span>
+                </span>
               </div>
               <div style={{ fontSize: 13 }}>{e.label}</div>
               {e.meta ? (
