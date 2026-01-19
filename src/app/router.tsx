@@ -56,4 +56,6 @@ export const router = createBrowserRouter([
       </AppLayout>
     ),
   },
-]);
+], {
+  basename: '/react-use-context-labs/',
+});
