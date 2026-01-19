@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
+import { TimelinePanel } from "../observability/TimelinePanel";
 
 type Props = { children: ReactNode };
 
@@ -58,8 +59,17 @@ export function AppLayout({ children }: Props) {
         </div>
       </aside>
 
-      <main style={{ padding: 24, maxWidth: 1040 }}>
-        {children}
+      <main style={{ padding: 24 }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 18,
+            alignItems: "start",
+          }}
+        >
+          <div style={{ flex: 1 }}>{children}</div>
+          <TimelinePanel />
+        </div>
       </main>
     </div>
   );
